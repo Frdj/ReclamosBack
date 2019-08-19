@@ -1,0 +1,27 @@
+{
+  "name": "reclamosback",
+  "version": "1.0.0",
+  "description": "",
+  "main": "index.js",
+  "scripts": {
+    "start": "ts-node server/index.ts",
+    "compile": "tsc",
+    "dev": "nodemon server/index.ts",
+    "dev:debug": "nodemon --exec \"node -r ts-node/register\" --inspect-brk server/index.ts",
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "author": "",
+  "license": "ISC",
+  "dependencies": {
+    "@types/express": "^4.17.1",
+    "express": "^4.17.1",
+    "mssql": "^5.1.0",
+    "nodemon": "^1.19.1",
+    "ts-node": "^8.3.0",
+    "typeorm": "^0.2.18",
+    "typescript": "^3.5.3"
+  },
+  "devDependencies": {
+    "@types/node": "^12.7.2"
+  }
+}

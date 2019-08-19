@@ -1,0 +1,13 @@
+{
+   "type": "mssql",
+		"host": "localhost",
+		"port": 1433,
+		"username": "sa",
+		"password": "sasasa",
+		"database": "reclamos",
+		"synchronize": true,
+		"entities": [
+			"./server/api/model/*{.ts,.js}"
+		],
+		"logging": true
+}
