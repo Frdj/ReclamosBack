@@ -6,22 +6,28 @@ import { Usuario } from "./usuario";
 export class Reclamo {
    @PrimaryGeneratedColumn()
    id: number;
-   
+  
    @Column()
-   nombre: string;
-
-   @ManyToOne(type => EstadoReclamo, estadoReclamo => estadoReclamo.id)
-   @JoinColumn({ name: 'idEstado'})
-   estado: EstadoReclamo
-
-   @Column()
-   fecha: string;
+   fecha: Date;
 
    @ManyToOne(type => Usuario, idUsuario => idUsuario)
    @JoinColumn({ name: 'idUsuario'})
    usuario: Usuario
 
-   constructor($nombre: string){
-    this.nombre = $nombre;
+   @Column()
+   descripcion: string;
+
+   @Column()
+   nroOrden: number;
+
+   @Column()
+   fuente: string;
+
+   @ManyToOne(type => EstadoReclamo, estadoReclamo => estadoReclamo.id)
+   @JoinColumn({ name: 'idEstado'})
+   estado: EstadoReclamo
+
+   constructor($fecha: Date){
+    this.fecha = $fecha;
    }
 }

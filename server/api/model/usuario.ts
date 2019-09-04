@@ -9,19 +9,19 @@ export class Usuario {
    id: number;
    
    @Column()
+   idSSO: string;
+
+   @Column()
    nombre: string;
 
    @Column()
    email: string;
 
    @Column()
-   idSSO: string;
+   telefono: string;
 
    @Column()
    direccion: string;
-
-   @Column()
-   telefono: string;
 
    @Column()
    rol: string;
