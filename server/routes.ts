@@ -1,12 +1,11 @@
 import { Application } from 'express';
-//import examplesRouter from './api/controllers/examples/router';
-//import partidoRouter from './api/controllers/partido/router';
 import reclamoRouter from './api/controllers/reclamo/router';
-//import partidoRouter from './api/controllers/partido/router'
-//import sumadorRouter from './api/controllers/sumador/router';
+import swaggerUi from 'swagger-ui-express'
+import * as swaggerDocument from './swagger.json'
 
 export default function routes(app: Application): void {
 app.use('/reclamo', reclamoRouter);
+app.use('/swagger', swaggerUi.serve, swaggerUi.setup(swaggerDocument));     
 //app.use('/api/v1/partidos', partidoRouter);
 //app.use('/api/v1/sumador-de-puntos', sumadorRouter);
 };
