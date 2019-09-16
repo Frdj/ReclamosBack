@@ -7,10 +7,6 @@ values
 (4,"Cancelado"),
 (5,"No Retirado");
 
-#Modificar la funcion now() segun el motor de bd usado
-#Mysql: now()
-#SQL Server: getdate()
-#PostgreSQL: CURRENT_DATE
 INSERT INTO reclamos.usuario 
 (nombre,email,idSSO,direccion,telefono,rol) 
 values 
@@ -18,6 +14,10 @@ values
 ("Ricardo Thompson","rthompson@uade.com",2,"calle falsa 223","47556686","usuario"),
 ("Operador 1","operador@uade.com",3,"calle falsa 433","47556687","operador");
 
+#Modificar la funcion now() segun el motor de bd usado
+#Mysql: now()
+#SQL Server: getdate()
+#PostgreSQL: CURRENT_DATE
 INSERT INTO reclamos.reclamo 
 (idEstado, idUsuario, descripcion,nroOrden,fuente,fecha)
 values
