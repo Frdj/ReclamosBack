@@ -1,13 +1,11 @@
 {
-   "type": "mssql",
-		"host": "localhost",
-		"port": 1433,
-		"username": "sa",
-		"password": "sasasa",
-		"database": "reclamos",
-		"synchronize": true,
-		"entities": [
-			"./server/api/model/*{.ts,.js}"
-		],
-		"logging": true
+  "type": "postgres",
+  "host": "localhost",
+  "port": 5432,
+  "username": "postgres",
+  "password": "postgres",
+  "database": "reclamos",
+  "synchronize": true,
+  "entities": ["./server/api/model/*{.ts,.js}"],
+  "logging": true
 }
