@@ -35,10 +35,10 @@ import { EntityRepository, AbstractRepository } from 'typeorm';
     }
 
     findOne = (id: number): Promise<Reclamo> => {
-        return this.repository.findOne(id);
+        return this.repository.findOne({where: { id: id }, relations: ["estado", "usuario"]});
     } 
 
     findAll = (): Promise<Array<Reclamo>> => {
-        return this.repository.find({order: {descripcion: 'ASC' }, relations: ["estado", "usuario"]});
+        return this.repository.find({order: {id: 'ASC' }, relations: ["estado", "usuario"]});
     }
 }

@@ -27,7 +27,19 @@ export class Reclamo {
    @JoinColumn({ name: 'idEstado'})
    estado: EstadoReclamo
 
-   constructor($fecha: Date){
-    this.fecha = $fecha;
+   constructor(
+      $usuario:Usuario, 
+      $descripcion: string, 
+      $nroOrden: number, 
+      $fuente:string, 
+      $fecha: Date,
+      $estado: EstadoReclamo
+   ){
+      this.usuario = $usuario;
+      this.descripcion = $descripcion;
+      this.nroOrden = $nroOrden;
+      this.fuente = $fuente;
+      this.estado = $estado;
+      this.fecha = $fecha;
    }
 }

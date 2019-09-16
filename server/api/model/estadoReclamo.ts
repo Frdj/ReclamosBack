@@ -11,7 +11,8 @@ export class EstadoReclamo {
    @Column()
    descripcion: string;
 
-   constructor($descripcion: string){
+   constructor($id:number,$descripcion: string){
+    this.id = $id;  
     this.descripcion = $descripcion;
    }
 }
