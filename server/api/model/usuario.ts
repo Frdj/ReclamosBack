@@ -9,7 +9,7 @@ export class Usuario {
    id: number;
    
    @Column()
-   idSSO: string;
+   idSSO: number;
 
    @Column()
    nombre: string;
@@ -26,7 +26,13 @@ export class Usuario {
    @Column()
    rol: string;
 
-   constructor($estado: string){
-   //  this.estado = $estado;
+   constructor($id : number, $idSSO: number, $nombre:string, $email:string,$telefono:string,$direccion:string,$rol: string){
+      this.id = $id;
+      this.idSSO = $idSSO;
+      this.nombre = $nombre;
+      this.email = $email;
+      this.telefono = $telefono;
+      this.direccion = $direccion;
+      this.rol = $rol;
    }
 }

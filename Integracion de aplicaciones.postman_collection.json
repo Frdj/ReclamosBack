@@ -1,0 +1,148 @@
+{
+	"info": {
+		"_postman_id": "5be79df6-1a2c-4352-93b2-57d4f2c65ae7",
+		"name": "Integracion de aplicaciones",
+		"schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json"
+	},
+	"item": [
+		{
+			"name": "Reclamos",
+			"item": [
+				{
+					"name": "GetReclamos",
+					"request": {
+						"method": "GET",
+						"header": [],
+						"body": {
+							"mode": "raw",
+							"raw": ""
+						},
+						"url": {
+							"raw": "http://localhost:3000/reclamo/",
+							"protocol": "http",
+							"host": [
+								"localhost"
+							],
+							"port": "3000",
+							"path": [
+								"reclamo",
+								""
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "GuardarReclamo",
+					"request": {
+						"method": "POST",
+						"header": [
+							{
+								"key": "Content-Type",
+								"name": "Content-Type",
+								"value": "application/json",
+								"type": "text"
+							}
+						],
+						"body": {
+							"mode": "raw",
+							"raw": "{\n\t\"usuario\": {\n\t\t\"id\":1\n\t},\n    \"descripcion\": \"Descripcion de prueba\",\n    \"nroOrden\": 5,\n    \"fuente\":\"operador\"\n}"
+						},
+						"url": {
+							"raw": "http://localhost:3000/reclamo/save",
+							"protocol": "http",
+							"host": [
+								"localhost"
+							],
+							"port": "3000",
+							"path": [
+								"reclamo",
+								"save"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "ModificarReclamo",
+					"request": {
+						"method": "PUT",
+						"header": [
+							{
+								"key": "Content-Type",
+								"name": "Content-Type",
+								"type": "text",
+								"value": "application/json"
+							}
+						],
+						"body": {
+							"mode": "raw",
+							"raw": "{\n\t\"usuario\": {\n\t\t\"id\":1\n\t},\n    \"descripcion\": \"Descripcion de prueba actualizado\",\n    \"nroOrden\": 4,\n    \"fuente\":\"operador\",\n    \"fecha\":\"2019-09-15 21:11:11\",\n    \"estado\":{\n    \t\"id\":4\n    }\n}"
+						},
+						"url": {
+							"raw": "http://localhost:3000/reclamo/4",
+							"protocol": "http",
+							"host": [
+								"localhost"
+							],
+							"port": "3000",
+							"path": [
+								"reclamo",
+								"4"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "BuscarReclamo",
+					"request": {
+						"method": "GET",
+						"header": [],
+						"body": {
+							"mode": "raw",
+							"raw": ""
+						},
+						"url": {
+							"raw": "http://localhost:3000/reclamo/3",
+							"protocol": "http",
+							"host": [
+								"localhost"
+							],
+							"port": "3000",
+							"path": [
+								"reclamo",
+								"3"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "BorrarReclamo",
+					"request": {
+						"method": "DELETE",
+						"header": [],
+						"body": {
+							"mode": "raw",
+							"raw": ""
+						},
+						"url": {
+							"raw": "http://localhost:3000/reclamo/4",
+							"protocol": "http",
+							"host": [
+								"localhost"
+							],
+							"port": "3000",
+							"path": [
+								"reclamo",
+								"4"
+							]
+						}
+					},
+					"response": []
+				}
+			]
+		}
+	]
+}

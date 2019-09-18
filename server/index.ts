@@ -10,5 +10,5 @@ const port = parseInt("3000");
     const server : Server = new Server();
     server.router(routes);
     server.listen(port);
-    EstadoService.save(new EstadoReclamo("Estado1"));
+    //EstadoService.save(new EstadoReclamo("Estado1"));
  }).catch(err => console.error(err));
