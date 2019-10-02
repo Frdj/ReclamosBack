@@ -3,11 +3,7 @@
     "info": {
         "version": "1.0.0",
         "title": "Reclamos API",
-        "description": "API de reclamos",
-        "license": {
-            "name": "MIT",
-            "url": "https://opensource.org/licenses/MIT"
-        }
+        "description": "API de reclamos"
     },
     "servers": [
         {
@@ -45,16 +41,16 @@
             },
             "post": {
                 "tags": [
-                    "Cats"
+                    "Reclamos"
                 ],
-                "summary": "Create a new cat in system",
+                "summary": "Crear un reclamo",
                 "requestBody": {
-                    "description": "Cat Object",
+                    "description": "Objeto Reclamo",
                     "required": true,
                     "content": {
                         "application/json": {
                             "schema": {
-                                "$ref": "#/definitions/Cat"
+                                "$ref": "#/definitions/Reclamo"
                             }
                         }
                     }
@@ -66,7 +62,7 @@
                     "200": {
                         "description": "OK",
                         "schema": {
-                            "$ref": "#/definitions/id"
+                            "$ref": "#/definitions/ReclamoResponse"
                         }
                     },
                     "400": {
@@ -186,21 +182,15 @@
         }
     },
     "definitions": {
-        "id": {
-            "properties": {
-                "uuid": {
-                    "type": "string"
-                }
-            }
-        },
         "Reclamo": {
             "type": "object",
             "properties": {
                 "fecha": {
-                    "type": "date"
+                    "type": "string",
+                    "format": "date-time"
                 },
                 "usuario": {
-                    "type": "Usuario"
+                    "$ref": "#/definitions/Usuario"
                 },
                 "descripcion": {
                     "type": "string"
@@ -212,7 +202,59 @@
                     "type": "string"
                 },
                 "estado": {
-                    "type": "EstadoReclamo"
+                    "$ref": "#/definitions/EstadoReclamo"
+                }
+            }
+        },
+        "Usuario": {
+            "type": "object",
+            "properties": {
+                "nombre": {
+                    "type": "string"
+                },
+                "email": {
+                    "type": "string"
+                },
+                "telefono": {
+                    "type": "string"
+                },
+                "direccion": {
+                    "type": "string"
+                },
+                "rol": {
+                    "type": "string"
+                }
+            }
+        },
+        "EstadoReclamo": {
+            "type": "object",
+            "properties": {
+                "descripcion": {
+                    "type": "string"
+                }
+            }
+        },
+        "ReclamoResponse": {
+            "type": "object",
+            "properties": {
+                "fecha": {
+                    "type": "string",
+                    "format": "date-time"
+                },
+                "idUsuario": {
+                    "type": "number"
+                },
+                "descripcion": {
+                    "type": "string"
+                },
+                "nroOrden": {
+                    "type": "number"
+                },
+                "fuente": {
+                    "type": "string"
+                },
+                "idEstado": {
+                    "type": "number"
                 }
             }
         }
