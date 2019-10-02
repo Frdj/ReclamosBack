@@ -11,7 +11,7 @@ exports.ensureAuth = function (req, res, next) {
             var payload = jwt.decode(token, secret);
 
         } catch (ex) {
-            return res.status(404).send({
+            return res.status(401).send({
                 message: 'EL token no es valido'
             });
         }
