@@ -41,9 +41,16 @@
                 "responses": {
                     "200": {
                         "description": "OK",
-                        "schema": {
-                            "$ref": "#/definitions/Reclamo"
-                        }
+                        "content": {
+                            "application/json": {
+                              "schema": {
+                                "type": "array",
+                                "items": {
+                                    "$ref": "#/definitions/Reclamo"
+                                }
+                              }
+                            }
+                          }
                     },
                     "404": {
                         "description": "No se encontro el reclamo especificado"
@@ -115,9 +122,13 @@
                 "responses": {
                     "200": {
                         "description": "OK",
-                        "schema": {
-                            "$ref": "#/definitions/Reclamo"
-                        }
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "$ref": "#/definitions/Reclamo"
+                                }
+                            }
+                          }
                     },
                     "404": {
                         "description": "Error. Reclamo no encontrado."
