@@ -1,6 +1,6 @@
 import { Reclamo } from '../model/reclamo';
 import { promises } from 'fs';
-import { EntityRepository, AbstractRepository, UpdateResult } from 'typeorm';
+import { EntityRepository, AbstractRepository } from 'typeorm';
 
     @EntityRepository(Reclamo)
     export class ReclamoRepository extends AbstractRepository<Reclamo> {
@@ -9,22 +9,16 @@ import { EntityRepository, AbstractRepository, UpdateResult } from 'typeorm';
     }
     
     update = (id: number, reclamo: Reclamo): Promise<Reclamo> => {
-        return this.findOne(id)
+        return this.repository.findOne(id)
             .then(r => {
                 if (!r) return;
-                const updateEntity = {                    
+                const updateEntity = {
                     ...r,
+                    ...reclamo,
+                    id: r.id
                 }
-                console.log("Id: " + id);
-                console.log("Reclamo: " + JSON.stringify(reclamo))
                 return this.repository.save(updateEntity);
             })
-            
-            /*let asd = {
-                descripcion : reclamo.getDescripcion(),
-                estado : reclamo.getEstado()
-            }
-        return this.repository.update(id,asd);*/
     }
 
     save = (reclamo: Reclamo): Promise<Reclamo> => {
@@ -45,6 +39,6 @@ import { EntityRepository, AbstractRepository, UpdateResult } from 'typeorm';
     } 
 
     findAll = (): Promise<Array<Reclamo>> => {
-        return this.repository.find({ relations: ["estado", "usuario"]});
+        return this.repository.find({order: {id: 'ASC' }, relations: ["estado", "usuario"]});
     }
 }

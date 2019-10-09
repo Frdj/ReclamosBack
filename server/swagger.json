@@ -46,7 +46,7 @@
                         }
                     },
                     "404": {
-                        "description": "No se encontro el reclamo especificado",
+                        "description": "No se encontro el reclamo especificado"
                     },
                     "500": {
                         "description": "Hubo un error en la recuperacion del reclamo."

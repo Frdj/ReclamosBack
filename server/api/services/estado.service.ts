@@ -7,7 +7,7 @@ export class EstadoService {
         return getCustomRepository(EstadoRepository).save(estado);
     } 
 
-    update(id : number , estado : any) : Promise<EstadoReclamo>{
+    update(id : number , estado : EstadoReclamo) : Promise<EstadoReclamo>{
         return getCustomRepository(EstadoRepository).update(id, estado);
     }
 
