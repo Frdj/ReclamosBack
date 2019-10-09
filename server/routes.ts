@@ -4,8 +4,6 @@ import swaggerUi from 'swagger-ui-express'
 import * as swaggerDocument from './swagger.json'
 
 export default function routes(app: Application): void {
-app.use('/reclamo', reclamoRouter);
-app.use('/swagger', swaggerUi.serve, swaggerUi.setup(swaggerDocument));     
-//app.use('/api/v1/partidos', partidoRouter);
-//app.use('/api/v1/sumador-de-puntos', sumadorRouter);
+    app.use('/reclamo', reclamoRouter);
+    app.use('/swagger', swaggerUi.serve, swaggerUi.setup(swaggerDocument));
 };
