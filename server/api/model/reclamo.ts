@@ -5,27 +5,27 @@ import { Usuario } from "./usuario";
 @Entity()
 export class Reclamo {
    @PrimaryGeneratedColumn()
-   id: number;
+   private id: number;
   
    @Column()
-   fecha: Date;
+   private fecha: Date;
 
    @ManyToOne(type => Usuario, idUsuario => idUsuario)
    @JoinColumn({ name: 'idUsuario'})
-   usuario: Usuario
+   private usuario: Usuario
 
    @Column()
-   descripcion: string;
+   private descripcion: string;
 
    @Column()
-   nroOrden: number;
+   private nroOrden: number;
 
    @Column()
-   fuente: string;
+   private fuente: string;
 
-   @ManyToOne(type => EstadoReclamo, estadoReclamo => estadoReclamo.id)
+   @ManyToOne(type => EstadoReclamo, estadoReclamo => estadoReclamo.getId)
    @JoinColumn({ name: 'idEstado'})
-   estado: EstadoReclamo
+   private estado: EstadoReclamo
 
    constructor(
       $usuario:Usuario, 
@@ -41,5 +41,87 @@ export class Reclamo {
       this.fuente = $fuente;
       this.estado = $estado;
       this.fecha = $fecha;
+   }
+
+   /**
+    * getId
+    */
+   public getId() {
+      return this.id
+   }
+
+   /**
+    * getFecha
+    */
+   public getFecha() {
+      return this.fecha;
+   }
+
+   /**
+    * getUsuario
+    */
+   public getUsuario() {
+      return this.usuario;
+   }
+
+   /**
+    * setUsuario
+    */
+   public setUsuario(usuario:Usuario) {
+      this.usuario = usuario;
+   }
+
+   /**
+    * getDescripcion
+    */
+   public getDescripcion() {
+      return this.descripcion;
+   }
+
+   /**
+    * setDescripcion
+    */
+   public setDescripcion(descripcion:string) {
+      this.descripcion = descripcion;
+   }
+
+      /**
+    * getEstado
+    */
+   public getEstado() {
+      return this.estado;
+   }
+   /**
+    * setEstado
+    */
+   public setEstado(estado : EstadoReclamo) {
+      this.estado = estado;
+   }
+
+   /**
+    * getNroOrden
+    */
+   public getNroOrden() {
+      return this.nroOrden;
+   }
+
+   /**
+    * setNroOrden
+    */
+   public setNroOrden(nroOrden : number) {
+      this.nroOrden = nroOrden;
+   }
+
+   /**
+    * getFuente
+    */
+   public getFuente() {
+      return this.fuente;
+   }
+   /**
+    * setFuente
+    */
+   public setFuente(fuente : string) {
+      this.fuente = fuente;
    }
 }

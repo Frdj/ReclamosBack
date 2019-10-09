@@ -1,14 +1,14 @@
 import { Reclamo } from '../model/reclamo';
 import { ReclamoRepository } from '../repositories/reclamo.repository';
-import { getCustomRepository } from 'typeorm'; 
+import { getCustomRepository, UpdateResult } from 'typeorm'; 
 
 export class ReclamoService {
     save(reclamo: Reclamo) : Promise<Reclamo>{
         return getCustomRepository(ReclamoRepository).save(reclamo);
     } 
 
-    update(id : number , player : any) : Promise<Reclamo>{
-        return getCustomRepository(ReclamoRepository).update(id, player);
+    update(id : number , reclamo : Reclamo) : Promise<Reclamo>{
+        return getCustomRepository(ReclamoRepository).update(id, reclamo);
     }
 
     remove(id: number) : Promise<Reclamo>{

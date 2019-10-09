@@ -3,12 +3,20 @@
     "info": {
         "version": "1.0.0",
         "title": "Reclamos API",
-        "description": "API de reclamos"
+        "description": "API de reclamos",
+        "license": {
+            "name": "MIT",
+            "url": "https://opensource.org/licenses/MIT"
+        }
     },
     "servers": [
         {
-            "url": "/",
+            "url": "/reclamo",
             "description": "Localhost"
+        },
+        {
+            "url": "https://integracion-aplicaciones.herokuapp.com/reclamo",
+            "description": "Heroku cloud"
         }
     ],
     "tags": [
@@ -24,7 +32,7 @@
         "application/json"
     ],
     "paths": {
-        "/reclamo": {
+        "/": {
             "get": {
                 "tags": [
                     "Reclamos"
@@ -36,21 +44,28 @@
                         "schema": {
                             "$ref": "#/definitions/Reclamo"
                         }
+                    },
+                    "404": {
+                        "description": "No se encontro el reclamo especificado",
+                    },
+                    "500": {
+                        "description": "Hubo un error en la recuperacion del reclamo."
                     }
+
                 }
             },
             "post": {
                 "tags": [
                     "Reclamos"
                 ],
-                "summary": "Crear un reclamo",
+                "summary": "Crea un nuevo reclamo",
                 "requestBody": {
-                    "description": "Objeto Reclamo",
+                    "description": "Reclamo Object",
                     "required": true,
                     "content": {
                         "application/json": {
                             "schema": {
-                                "$ref": "#/definitions/Reclamo"
+                                "$ref": "#/definitions/ReclamoSave"
                             }
                         }
                     }
@@ -62,36 +77,36 @@
                     "200": {
                         "description": "OK",
                         "schema": {
-                            "$ref": "#/definitions/ReclamoResponse"
+                            "$ref": "#/definitions/id"
                         }
                     },
-                    "400": {
-                        "description": "Failed. Bad post data."
+                    "500": {
+                        "description": "El usuario no existe, faltan datos o hubo un error mientras se guardaba el reclamo"
                     }
                 }
             }
         },
-        "/cats/{id}": {
+        "/{id}": {
             "parameters": [
                 {
                     "name": "id",
                     "in": "path",
                     "required": true,
-                    "description": "ID of the cat that we want to match",
+                    "description": "ID del reclamo que queremos encontrar",
                     "type": "string"
                 }
             ],
             "get": {
                 "tags": [
-                    "Cats"
+                    "Reclamos"
                 ],
-                "summary": "Get cat with given ID",
+                "summary": "Get reclamo with given ID",
                 "parameters": [
                     {
                         "in": "path",
                         "name": "id",
                         "required": true,
-                        "description": "Cat with id",
+                        "description": "Reclamo with id",
                         "schema": {
                             "$ref": "#/definitions/id"
                         }
@@ -101,26 +116,26 @@
                     "200": {
                         "description": "OK",
                         "schema": {
-                            "$ref": "#/definitions/Cat"
+                            "$ref": "#/definitions/Reclamo"
                         }
                     },
                     "404": {
-                        "description": "Failed. Cat not found."
+                        "description": "Failed. Reclamo not found."
                     }
                 }
             },
             "put": {
-                "summary": "Update cat with given ID",
+                "summary": "Update reclamo with given ID",
                 "tags": [
-                    "Cats"
+                    "Reclamos"
                 ],
                 "requestBody": {
-                    "description": "Cat Object",
+                    "description": "Reclamo Object",
                     "required": true,
                     "content": {
                         "application/json": {
                             "schema": {
-                                "$ref": "#/definitions/Cat"
+                                "$ref": "#/definitions/ReclamoUpdate"
                             }
                         }
                     }
@@ -130,7 +145,7 @@
                         "in": "path",
                         "name": "id",
                         "required": true,
-                        "description": "Cat with new values of properties",
+                        "description": "Reclamo with new values of properties",
                         "schema": {
                             "$ref": "#/definitions/id"
                         }
@@ -140,28 +155,28 @@
                     "200": {
                         "description": "OK",
                         "schema": {
-                            "$ref": "#/definitions/Cat"
+                            "$ref": "#/definitions/Reclamo"
                         }
                     },
                     "400": {
                         "description": "Failed. Bad post data."
                     },
                     "404": {
-                        "description": "Failed. Cat not found."
+                        "description": "Failed. Reclamo not found."
                     }
                 }
             },
             "delete": {
-                "summary": "Delete cat with given ID",
+                "summary": "Delete reclamo with given ID",
                 "tags": [
-                    "Cats"
+                    "Reclamos"
                 ],
                 "parameters": [
                     {
                         "in": "path",
                         "name": "id",
                         "required": true,
-                        "description": "Delete Cat with id",
+                        "description": "Delete Reclamo with id",
                         "schema": {
                             "$ref": "#/definitions/id"
                         }
@@ -171,17 +186,27 @@
                     "200": {
                         "description": "OK",
                         "schema": {
-                            "$ref": "#/definitions/id"
+                            "$ref": "#/definitions/Reclamo"
                         }
                     },
+                    "400": {
+                        "description": "Failed. Bad post data."
+                    },
                     "404": {
-                        "description": "Failed. Cat not found."
+                        "description": "Failed. Reclamo not found."
                     }
                 }
             }
         }
     },
     "definitions": {
+        "id": {
+            "properties": {
+                "uuid": {
+                    "type": "string"
+                }
+            }
+        },
         "Reclamo": {
             "type": "object",
             "properties": {
@@ -206,6 +231,42 @@
                 }
             }
         },
+        "ReclamoSave": {
+            "type": "object",
+            "properties": {
+                "email": {
+                    "type": "string"
+                },
+                "descripcion": {
+                    "type": "string"
+                },
+                "nroOrden": {
+                    "type": "number"
+                }
+            }
+        },
+        "ReclamoUpdate": {
+            "type": "object",
+            "properties": {
+                "descripcion": {
+                    "type": "string"
+                },
+                "estado": {
+                    "$ref": "#/definitions/EstadoReclamo"
+                }
+            }
+        },
+        "EstadoReclamo": {
+            "type": "object",
+            "properties": {
+                "id":{
+                    "type" : "number"
+                },
+                "descripcion": {
+                    "type": "string"
+                }
+            }
+        },
         "Usuario": {
             "type": "object",
             "properties": {
@@ -223,38 +284,6 @@
                 },
                 "rol": {
                     "type": "string"
-                }
-            }
-        },
-        "EstadoReclamo": {
-            "type": "object",
-            "properties": {
-                "descripcion": {
-                    "type": "string"
-                }
-            }
-        },
-        "ReclamoResponse": {
-            "type": "object",
-            "properties": {
-                "fecha": {
-                    "type": "string",
-                    "format": "date-time"
-                },
-                "idUsuario": {
-                    "type": "number"
-                },
-                "descripcion": {
-                    "type": "string"
-                },
-                "nroOrden": {
-                    "type": "number"
-                },
-                "fuente": {
-                    "type": "string"
-                },
-                "idEstado": {
-                    "type": "number"
                 }
             }
         }

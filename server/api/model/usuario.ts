@@ -5,7 +5,7 @@ import { Reclamo } from "./reclamo";
 export class Usuario {
    
    @PrimaryGeneratedColumn()
-   @OneToMany(type => Reclamo, reclamo => reclamo.usuario)
+   @OneToMany(type => Reclamo, reclamo => reclamo.getUsuario)
    id: number;
    
    @Column()

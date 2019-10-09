@@ -10,6 +10,15 @@ export class UsuarioService {
   getAll(): Promise<Array<Usuario>> {
     return getCustomRepository(UsuarioRepository).findAll();
   }
+
+  save(usuario: Usuario) : Promise<Usuario>{
+    
+    return getCustomRepository(UsuarioRepository).save(usuario);
+  } 
+
+  /*update(id : number , player : any) : Promise<Usuario>{
+      return getCustomRepository(UsuarioRepository).update(id, player);
+  }*/
 }
 
 export default new UsuarioService();
