@@ -23,6 +23,19 @@ export class ReclamoController {
       .catch(err => res.status(ResponseCode.InternalServerError).end());
   }
 
+  findOneByOrden(req: Request, res: Response): void {
+    const id = parseInt(req.params.id);
+    ReclamoService.findOneByOrden(id)
+      .then(r => {
+        if (!r) {
+          res.status(ResponseCode.NotFound).end();
+        } else {
+          res.json(r);
+        }
+      })
+      .catch(err => res.status(ResponseCode.InternalServerError).end());
+  }
+
   /**
    * AltaReclamo Funcionando
    */

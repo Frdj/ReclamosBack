@@ -19,6 +19,10 @@ export class ReclamoService {
         return getCustomRepository(ReclamoRepository).findOne(id);
     }
 
+    findOneByOrden(id: number) : Promise<Reclamo[]> {
+        return getCustomRepository(ReclamoRepository).findOneByOrden(id);
+    }
+
     getAll() : Promise<Array<Reclamo>> {
         return getCustomRepository(ReclamoRepository).findAll();
     } 
