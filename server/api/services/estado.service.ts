@@ -19,6 +19,10 @@ export class EstadoService {
         return getCustomRepository(EstadoRepository).findOne(id);
     }
 
+    findByDescription(name: string) : Promise<EstadoReclamo> {
+        return getCustomRepository(EstadoRepository).findByDescription(name);
+    }
+
     getAll() : Promise<Array<EstadoReclamo>> {
         return getCustomRepository(EstadoRepository).findAll();
     } 

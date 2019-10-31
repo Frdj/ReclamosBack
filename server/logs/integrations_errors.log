@@ -1,0 +1,40 @@
+{"message":"Error Message : test","level":"error"}
+error: Error Message : test
+2019-10-19T18:35:10.411Z [Error] error: Error Message : test
+2019-10-19T18:37:49.587Z error: Error Message : test
+2019-10-19T18:38:34.287Z error: Error Message : test
+2019-10-19T19:01:30.188Z error: test
+2019-10-19T19:02:36.694Z error: test
+2019-10-19T19:18:00.307Z error: No existe el estado FINALIZADOs
+2019-10-19T19:18:00.350Z error: No existe el reclamo 458712
+2019-10-19T19:19:00.003Z error: No se a encontrado el archivo test.csv
+2019-10-19T19:20:00.003Z error: No se a encontrado el archivo test.csv
+2019-10-19T19:21:00.003Z error: No se a encontrado el archivo test.csv
+2019-10-19T19:22:00.002Z error: No se a encontrado el archivo test.csv
+2019-10-19T19:23:00.003Z error: No se a encontrado el archivo test.csv
+2019-10-19T19:24:00.003Z error: No se a encontrado el archivo test.csv
+2019-10-19T19:25:00.003Z error: No se a encontrado el archivo test.csv
+2019-10-19T19:26:00.003Z error: No se a encontrado el archivo test.csv
+2019-10-19T19:27:00.003Z error: No se a encontrado el archivo test.csv
+2019-10-19T19:29:00.332Z error: No existe el estado FINALIZADOs
+2019-10-19T19:29:00.367Z error: No existe el reclamo 458712
+2019-10-19T19:30:00.003Z error: No se a encontrado el archivo test.csv
+2019-10-19T19:31:00.005Z error: No se a encontrado el archivo test.csv
+2019-10-19T19:32:00.183Z error: No existe el estado FINALIZADOs
+2019-10-19T19:32:00.281Z error: No existe el reclamo 458712
+2019-10-19T19:40:00.004Z error: No se a encontrado el archivo test.csv
+2019-10-19T19:41:00.003Z error: No se a encontrado el archivo test.csv
+2019-10-19T20:40:00.003Z error: No se a encontrado el archivo test.csv
+2019-10-19T20:41:00.003Z error: No se a encontrado el archivo test.csv
+2019-10-19T20:43:00.004Z error: No se a encontrado el archivo test.csv
+2019-10-19T22:29:00.020Z error: No existe el estado CANCELADOd
+2019-10-19T22:30:00.003Z error: No se a encontrado el archivo test.csv
+2019-10-19T22:34:00.026Z error: No existe el estado FINALIZADOs
+2019-10-19T22:34:00.026Z error: No existe el estado CANCELADOd
+2019-10-23T22:59:00.004Z error: No se a encontrado el archivo test.csv
+2019-10-23T23:00:00.003Z error: No se a encontrado el archivo test.csv
+2019-10-23T23:01:00.003Z error: No se a encontrado el archivo test.csv
+2019-10-23T23:03:00.002Z error: No se a encontrado el archivo test.csv
+2019-10-23T23:04:00.002Z error: No se a encontrado el archivo test.csv
+2019-10-23T23:05:00.002Z error: No se a encontrado el archivo test.csv
+2019-10-23T23:06:00.003Z error: No se a encontrado el archivo test.csv

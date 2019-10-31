@@ -45,4 +45,8 @@ import { EntityRepository, AbstractRepository } from 'typeorm';
     findAll = (): Promise<Array<Reclamo>> => {
         return this.repository.find({order: {id: 'ASC' }, relations: ["estado", "usuario"]});
     }
+
+    findByNroOrden = (nroOrden: number): Promise<Reclamo> => {
+        return this.repository.findOne({where: { nroOrden: nroOrden }, relations: ["estado", "usuario"]});
+    }
 }
