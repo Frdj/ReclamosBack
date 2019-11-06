@@ -37,6 +37,10 @@ import { EstadoReclamo } from '../model/estadoReclamo';
         return this.repository.findOne(id);
     } 
 
+    findByDescription = (name: string): Promise<EstadoReclamo> => {
+        return this.repository.findOne({where: { descripcion: name }});
+    } 
+
     findAll = (): Promise<Array<EstadoReclamo>> => {
         return this.repository.find({order: {descripcion: 'ASC' }});
     }

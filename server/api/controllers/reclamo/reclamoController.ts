@@ -55,22 +55,39 @@ export class ReclamoController {
       });
       return;
     }
-    let reclamoSave = new Reclamo(
-      usuario,
-      reclamo.descripcion,
-      reclamo.nroOrden,
-      'operador',
-      new Date(),
-      new EstadoReclamo(1, 'Ingresado')
-    );
-    ReclamoService.save(reclamoSave)
-      .then(x => res.json(x))
-      .catch(err => {
-        console.error(err);
+
+    ReclamoService.findByNroOrden(reclamo.nroOrden)
+    .then(x => {
+      if(x){
         return res.status(ResponseCode.InternalServerError).json({
-          message: `No se ha podido guardar el reclamo`
+          message: `El reclamo con nro de orden ` + reclamo.nroOrden + ` ya existe`
         });
+      }
+      else{
+        let reclamoSave = new Reclamo(
+          usuario,
+          reclamo.descripcion,
+          reclamo.nroOrden,
+          'operador',
+          new Date(),
+          new EstadoReclamo(1, 'Ingresado')
+        );
+        ReclamoService.save(reclamoSave)
+          .then(x => res.json(x))
+          .catch(err => {
+            console.error(err);
+            return res.status(ResponseCode.InternalServerError).json({
+              message: `No se ha podido guardar el reclamo`
+            });
+          });
+      }
+    })
+    .catch(err => {
+      console.error(err);
+      return res.status(ResponseCode.InternalServerError).json({
+        message: `Hubo un error en la recuperacion del reclamo`
       });
+    });
   }
 
   /**
