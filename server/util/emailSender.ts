@@ -1,18 +1,6 @@
 const nodemailer = require("nodemailer");
 
 export default class EmailSender{
-/*var transporter = nodemailer.createTransport({
-    host: "smtp-mail.outlook.com", // hostname
-    secureConnection: false, // TLS requires secureConnection to be false
-    port: 587, // port for secure SMTP
-    tls: {
-       ciphers:'SSLv3'
-    },
-    auth: {
-        user: 'niko_98_99@hotmail.com',
-        pass: 'lavieja9899'
-    }
-});*/
 
 constructor(){}
 
