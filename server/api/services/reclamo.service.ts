@@ -27,7 +27,7 @@ export class ReclamoService {
         return getCustomRepository(ReclamoRepository).findAll();
     } 
 
-    findByNroOrden(nroOrden: number) : Promise<Reclamo> {
+    async findByNroOrden(nroOrden: number) : Promise<Reclamo> {
         return getCustomRepository(ReclamoRepository).findByNroOrden(nroOrden);
     }
 } 

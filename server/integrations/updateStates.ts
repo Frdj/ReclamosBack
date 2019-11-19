@@ -1,93 +1,122 @@
 
 import EstadoService from '../api/services/estado.service';
 import ReclamoService from '../api/services/reclamo.service';
-import EmailSender from '../util/emailSender';
+import LogService from '../api/services/logs.service';
+import { Logs } from '../api/model/logs';
 
-const {successlog, errorlog, integrationslog} = require('../util/logger');
+import EmailSender from '../util/emailSender';
+import { getType } from 'mime';
+
+//const {successlog, errorlog, integrationslog} = require('../util/logger');
 const csv = require('csv-parser');
 const fs = require('fs');
+var Client = require('ftp');
 
 export default class UpdateStates {
-    pendingPath = "server/Inbound/Pending/";
-    processedPath = "server/Inbound/Processed/";
-
     constructor() {
     }
 
-    public actualizarReclamosCsv(file) {
-      let pathToFile = this.pendingPath + "/" + file;
-      if (fs.existsSync(pathToFile)) {
-        let errors = false;
-        fs.createReadStream(pathToFile)
-        //headers: false le indicas que no hay headers
-        //["Header1","Header2"] le indicas cuales seran los headers (no es necesario en el csv)
-        .pipe(csv( { separator: ';', headers: false}))
-        .on('data', (data) => {
-          //console.log(data[1])
-          EstadoService.findByDescription(data[1])
-          .then(estado => {
+    public actualizarReclamos(dataList) {
+      var arrayErrors = new Array();
+      var arraySuccess = new Array(); 
+
+      for (let index = 0; index < dataList.length; index++) {
+        const data = dataList[index];
+        console.log(data);
+        data[1] = data[1].replace("\"","")
+        EstadoService.findByDescription(data[1])
+        .then(estado => {
             if(!estado){
-              integrationslog.error(`No existe el estado ${data[1]}`);
-              errors = true;
+              LogService.save(new Logs("Error",`No existe el estado ${data[1]}`));
             }
             else{
               ReclamoService.findByNroOrden(data[0])
               .then(reclamo => {
                 if(!reclamo){
-                  integrationslog.error(`No existe el reclamo ${data[0]}`);
-                  errors = true;
+                  LogService.save(new Logs("Error",`No existe el reclamo ${data[0]}`));
                 }
                 else{
-                  reclamo.estado.id = estado.id;
-                  ReclamoService.update(reclamo.id,reclamo)
-                  ;
-                  if(estado.descripcion.toLowerCase() == "finalizado"){
-                    this.sendEmail(reclamo.usuario.nombre + "!, El grupo de logistica ya esta en camino!",reclamo.nroOrden,reclamo.usuario.email)
-                    successlog.info("Enviando mail")
+                  if(reclamo.estado.id != estado.id){
+                    reclamo.estado.id = estado.id;
+                    ReclamoService.update(reclamo.id,reclamo);
+                    if(estado.descripcion.toLowerCase() == "retiro pendiente"){
+                      this.sendEmail(reclamo.usuario.nombre + "!, El grupo de logistica ya esta en camino!",reclamo.nroOrden,reclamo.usuario.email);
+                    }
                   }
                 }
               })
               .catch(err =>{
-                errorlog.error(err)
-                errors = true;
+                LogService.save(new Logs("Error",`Hubo un error en la busqueda del reclamo. Nro orden: ${data[0]} - Estado: ${data[1]}. Detalle del error ${err.toString}`));
               })
             }
-          })
-          .catch(err =>{
-            errorlog.error(err)
-            errors = true;
-          })
         })
-        .on('end', () => {
-          successlog.info("Lectura del archivo finalizada");
-          this.copyFileToProcessed(file,errors);
-        });
-      }
-      else{
-        integrationslog.error(`No se a encontrado el archivo ${file}`);
+        .catch(err =>{
+          LogService.save(new Logs("Error",`Hubo un error en la busqueda del estado. Nro orden: ${data[0]} - Estado: ${data[1]}. Detalle del error ${err.toString}`));
+        })
       }
     }
 
-    private copyFileToProcessed(file, errors){    
-      let fileArray = file.split(".");
-      let date = new Date();
-      let fecha;
-      if(errors){
-        fecha = date.getFullYear().toString() + (date.getMonth()+1).toString() + date.getDate().toString() + "_" + date.getHours().toString() + date.getMinutes().toString() + date.getSeconds().toString() + " - with errors";
-      }
-      else{
-        fecha = date.getFullYear().toString() + (date.getMonth()+1).toString() + date.getDate().toString() + "_" + date.getHours().toString() + date.getMinutes().toString() + date.getSeconds().toString();
-      }
-        fs.rename(this.pendingPath + file, this.processedPath + fileArray[0] + " - " + fecha + ".csv", (err)=>{
-        if(err) throw err;
-        else console.log('Successfully moved');
-      });
-
-    }
-
-    public sendEmail(mensaje,nroReclamo, email){
+    public sendEmail(mensaje,nroReclamo, email):String{
       //integrationslog.error(mensaje);
-      EmailSender.sendEmail(mensaje,nroReclamo, email);
+      console.log("Envio mail")
+      return EmailSender.sendEmail(mensaje,nroReclamo, email);
+    }
+
+    public readCsv(){
+      const jsftp = require("jsftp");
+      const Ftp = new jsftp({
+        host: "f24-preview.runhosting.com",
+        user: "3203234_clientes",
+        pass: "clientes123"
+      });
+      var file = "/ejemplo.csv";
+      var str = ""; // Will store the contents of the file
+      Ftp.get(file, (err, socket) => {
+        if (err) {
+          LogService.save(new Logs("Error",`Fallo en el get del archivo ${file} - ${err}`));
+          return;
+        }
+      
+        socket.on("data", d => {
+          let aux = d.toString();
+          console.log(d);
+          str += (d.toString());
+        });
+      
+        socket.on("close", err => {
+          if (err) {
+            console.error("Error en el cierre del socket.");
+            LogService.save(new Logs("Error",`Error en el cierre del socket. ${err}`));
+          }
+          else{
+            console.log("parsing...");
+            let res = new Array();
+            let array = str.split("\n");
+
+            let estadosLogistica = {
+              "En preparacion" : "Retiro Pendiente",
+              "En viaje" : "Retiro Pendiente",
+              "Entregado" : "Finalizado",
+              "A retirar en domicilio" : "Retiro Pendiente",
+              "Retirado" : "Retirado"
+            };
+            for (let i = 1; i < array.length; i++) {   
+              let aux = new Array();       
+              let element = array[i].split(",");
+              aux.push("45872");//element[0].replace(/"/g,'')
+              aux.push(estadosLogistica[element[1].replace(/"/g,'')]);
+
+              res.push(aux);//Nro de orden, estado pedido
+            }
+            console.table(res);
+            this.actualizarReclamos(res)
+          }
+          console.log("Socket cerrado");
+          LogService.save(new Logs("Success",`Cierre de conexion exitosa`));
+        });
+      
+        socket.resume();
+      });
     }
 
 }

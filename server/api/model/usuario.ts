@@ -26,8 +26,8 @@ export class Usuario {
    @Column()
    rol: string;
 
-   constructor($id : number, $idSSO: number, $nombre:string, $email:string,$telefono:string,$direccion:string,$rol: string){
-      this.id = $id;
+   constructor(/*$id : number,*/ $idSSO: number, $nombre:string, $email:string,$telefono:string,$direccion:string,$rol: string){
+      //this.id = $id;
       this.idSSO = $idSSO;
       this.nombre = $nombre;
       this.email = $email;

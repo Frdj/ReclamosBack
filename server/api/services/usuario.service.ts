@@ -11,7 +11,7 @@ export class UsuarioService {
     return getCustomRepository(UsuarioRepository).findAll();
   }
 
-  save(usuario: Usuario) : Promise<Usuario>{
+  async save(usuario: Usuario) : Promise<Usuario>{
     
     return getCustomRepository(UsuarioRepository).save(usuario);
   } 

@@ -8,7 +8,7 @@ export class UsuarioRepository extends AbstractRepository<Usuario> {
     super();
   }
 
-  findOne = (email: string): Promise<Usuario> => {
+  /*findOne = (email: string): Promise<Usuario> => {
     return new Promise((resolve, reject) => {
       this.repository
         .findOne({ where: { email: email } })
@@ -20,7 +20,10 @@ export class UsuarioRepository extends AbstractRepository<Usuario> {
           }
         });
     });
-  };
+  };*/
+  findOne = (email: string): Promise<Usuario> => {
+    return this.repository.findOne({where: { email: email }});
+  }
 
   findAll = (): Promise<Array<Usuario>> => {
     return this.repository.find({ order: { id: 'ASC' } });
