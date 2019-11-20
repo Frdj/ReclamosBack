@@ -126,6 +126,13 @@ export class ReclamoController {
       return;
     }
     else{
+      if(reclamo.mail != datosTienda.logistica.email){
+        LogService.save(new Logs("Error",`Error en save. El email enviado no coincide con el email de tienda ${reclamo.mail} - ${datosTienda.logistica.email}.`)); 
+        res.status(ResponseCode.InternalServerError).json({
+          message: `El email enviado no coincide con el email de tienda ${reclamo.mail} - ${datosTienda.logistica.email}`
+        });
+        return;
+      }
       usuario = await UsuarioService.findOne(reclamo.mail)
       .catch(err => {
         LogService.save(new Logs("Error",`Error en save. Error en la busqueda de usuario ${reclamo.mail} - ${err}.`)); 
@@ -251,6 +258,13 @@ export class ReclamoController {
       return;
     }
     else{
+      if(reclamo.email != datosTienda.logistica.email){
+        LogService.save(new Logs("Error",`Error en save. El email enviado no coincide con el email de tienda ${reclamo.email} - ${datosTienda.logistica.email}.`)); 
+        res.status(ResponseCode.InternalServerError).json({
+          message: `El email enviado no coincide con el email de tienda ${reclamo.email} - ${datosTienda.logistica.email}`
+        });
+        return;
+      }
       usuario = await UsuarioService.findOne(reclamo.email)
       .catch(err => {
         LogService.save(new Logs("Error",`Error en save. Error en la busqueda de usuario ${reclamo.email} - ${err}.`)); 
@@ -354,7 +368,7 @@ export class ReclamoController {
   update(req: Request, res: Response): void {
     const id = parseInt(req.params.id);
     const reclamo = req.body;
-    if(reclamo.descripcion == "" || reclamo.estado <=0 || reclamo.estado >5){
+    if(reclamo.estado == undefined || reclamo.descripcion == "" || reclamo.estado <=0 || reclamo.estado >=6){
       res.status(ResponseCode.InternalServerError).json({
         message: `No se pudo actualizar el reclamo. Descripcion o estado incorrecto`
       });
@@ -365,10 +379,36 @@ export class ReclamoController {
         if (!r) {
           res.status(ResponseCode.NotFound).end();
         } else {
-          r.descripcion = reclamo.descripcion;
+          if(reclamo.descripcion != undefined && reclamo.descripcion != "")
+            r.descripcion = reclamo.descripcion;
           r.estado.id = reclamo.estado;
+          if(reclamo.estado == 4){// es un estado cancelado
+            //aviso a logistica de la orden cancelada
+            //axios.post("endpoint de cancel",{id de pedido = id nuestro});
+            //va a requerir un token de m2m o de tipo usuario.
+            //En caso de que sea de tipo usuario nos tenemos que registrar
+            //cuando nos logueamos nos dan un token y con eso vamos al endpoint
+
+            /* cuenta de reclamos en logistica
+            {
+              "email": "reclamos@reclamosuade.com.ar",
+              "fullName": "reclamos",
+              "password": "1-reclamos"
+            }
+            */
+            axios.post("https://logistica-integracion.herokuapp.com/auth/signin",{
+                "email": "reclamos@reclamosuade.com.ar",
+                "password": "1-reclamos"
+            })
+            .then(res => {
+              let token = res.data.token;
+              //console.log(token);
+            })
+          }
           ReclamoService.update(id, r).then(r2 => {
-            if (!r2) return res.status(ResponseCode.InternalServerError).end();
+            if (!r2) {
+              return res.status(ResponseCode.InternalServerError).end();
+            }
             return res.status(ResponseCode.Ok).end();
           });
         }
@@ -399,10 +439,10 @@ export class ReclamoController {
 
   setCronTime(req: Request, res: Response):void {
     let time:String = req.body.time;
-    console.log(time)
     let updater = new UpdateStates();
     try{
       if(time == "ya"){
+        LogService.save(new Logs("Info",`Ejecutando actualizador de estados manualmente`)); 
         updater.readCsv();
       }
       else{
@@ -410,6 +450,7 @@ export class ReclamoController {
           job.stop();
         }
         job = new CronJob(time, function () {
+          LogService.save(new Logs("Info",`Ejecutando actualizador de estados por cron`)); 
           updater.readCsv();
         }, null, true, "Indian/Mauritius");
       }

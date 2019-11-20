@@ -16,18 +16,17 @@ export default class UpdateStates {
     constructor() {
     }
 
-    public actualizarReclamos(dataList) {
+    public actualizarReclamos2(dataList) {
       var arrayErrors = new Array();
       var arraySuccess = new Array(); 
 
       for (let index = 0; index < dataList.length; index++) {
         const data = dataList[index];
-        console.log(data);
         data[1] = data[1].replace("\"","")
         EstadoService.findByDescription(data[1])
         .then(estado => {
             if(!estado){
-              LogService.save(new Logs("Error",`No existe el estado ${data[1]}`));
+              LogService.save(new Logs("Error",`Actualizando No existe el estado ${data[1]}`));
             }
             else{
               ReclamoService.findByNroOrden(data[0])
@@ -56,9 +55,52 @@ export default class UpdateStates {
       }
     }
 
+    async actualizarReclamos(dataList) {
+      for (let data of dataList) {
+        await ReclamoService.findByNroOrden(data[0])
+        .then(reclamo => {
+          if(!reclamo){
+            LogService.save(new Logs("Error",`No existe el reclamo ${data[0]}`));
+          }
+          else{
+            EstadoService.findByDescription(data[1])
+            .then(estado => {
+                if(!estado){
+                  LogService.save(new Logs("Error",`Nro orden ${data[0]}: No existe el estado ${data[1]}`));
+                }
+                else{
+                  if(reclamo.estado.id != 4){
+                    if(reclamo.estado.id != estado.id){
+                      reclamo.estado.id = estado.id;
+                      ReclamoService.update(reclamo.id,reclamo);
+                    
+                      if(estado.descripcion.toLowerCase() == "retiro pendiente"){
+                        this.sendEmail(reclamo.usuario.nombre + "!, El grupo de logistica ya esta en camino!",reclamo.nroOrden,reclamo.usuario.email);
+                      }
+                    }
+                    else{
+                      LogService.save(new Logs("Info",`Nro orden ${data[0]}: Estado de orden al dia => ${data[1]} = ${estado.descripcion}`));
+                    }
+                  }
+                  else{
+                    LogService.save(new Logs("Info",`Nro orden ${data[0]}: No se actualiza al estado ${data[1]} porque se encuentra cancelada`));
+                  }
+                }
+            })
+            .catch(err =>{
+              LogService.save(new Logs("Error",`Nro orden ${data[0]} - Estado ${data[1]}: Hubo un error en la busqueda del estado. Detalle del error ${err.toString}`));
+            })
+          }
+        })
+        .catch(err =>{
+          LogService.save(new Logs("Error",`Nro orden ${data[0]} - Estado ${data[1]}: Hubo un error en la busqueda del reclamo. Detalle del error ${err.toString}`));
+        })
+      }
+      //LogService.save(new Logs("Info",`Corrida completada. ${total} registros - ${correctos} correctos - ${fallas} fallas - ${neutros} neutros`));
+    }
+
     public sendEmail(mensaje,nroReclamo, email):String{
       //integrationslog.error(mensaje);
-      console.log("Envio mail")
       return EmailSender.sendEmail(mensaje,nroReclamo, email);
     }
 
@@ -69,7 +111,7 @@ export default class UpdateStates {
         user: "3203234_clientes",
         pass: "clientes123"
       });
-      var file = "/ejemplo.csv";
+      var file = "info.csv";
       var str = ""; // Will store the contents of the file
       Ftp.get(file, (err, socket) => {
         if (err) {
@@ -78,40 +120,35 @@ export default class UpdateStates {
         }
       
         socket.on("data", d => {
-          let aux = d.toString();
-          console.log(d);
           str += (d.toString());
         });
       
         socket.on("close", err => {
           if (err) {
-            console.error("Error en el cierre del socket.");
             LogService.save(new Logs("Error",`Error en el cierre del socket. ${err}`));
           }
           else{
-            console.log("parsing...");
-            let res = new Array();
+            let res = new Map();
             let array = str.split("\n");
-
             let estadosLogistica = {
-              "En preparacion" : "Retiro Pendiente",
+              "En preparación" : "Ingresado",
               "En viaje" : "Retiro Pendiente",
               "Entregado" : "Finalizado",
               "A retirar en domicilio" : "Retiro Pendiente",
               "Retirado" : "Retirado"
             };
             for (let i = 1; i < array.length; i++) {   
-              let aux = new Array();       
               let element = array[i].split(",");
-              aux.push("45872");//element[0].replace(/"/g,'')
-              aux.push(estadosLogistica[element[1].replace(/"/g,'')]);
-
-              res.push(aux);//Nro de orden, estado pedido
+              if(element && element[0] != ''){           
+                let estado = estadosLogistica[element[1].replace(/"/g,'')];
+                if((estado == "Retiro Pendiente" || estado == "Retirado") && !res.has(element[0])){
+                  res.set(element[0],[element[0],estado]);
+                }
+              }
             }
-            console.table(res);
-            this.actualizarReclamos(res)
+
+            this.actualizarReclamos(res.values());
           }
-          console.log("Socket cerrado");
           LogService.save(new Logs("Success",`Cierre de conexion exitosa`));
         });
       

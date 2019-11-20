@@ -28,10 +28,10 @@ constructor(){}
     
     transporter.sendMail(mailOptions, function(error, info) {
         if (error) {
-          LogService.save(new Logs("Error",`Hubo un error en el envio del mail a ${email} por el reclamo nro ${nroReclamo} - ${error}`));
+          LogService.save(new Logs("Error",`Nro orden ${nroReclamo} - Hubo un error en el envio del mail a ${email} - ${error}`));
           return error;
         } else {
-          LogService.save(new Logs("Success",`Se envio el mail a ${email} por el reclamo nro ${nroReclamo}`));
+          LogService.save(new Logs("Success",`Nro orden ${nroReclamo} - Se envio el mail a ${email}`));
           return;
         }
     });
