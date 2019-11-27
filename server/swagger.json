@@ -249,27 +249,27 @@
                         "description": "Error. Reclamo no encontrado."
                     }
                 }
-            },
-            "/setCron": {
-                "summary": "Setea tiempo de sincronización de CSV",
-                "tags": [
-                    "Otros"
-                ],
-                "parameters": [
-                    {
-                        "in": "body",
-                        "name": "time",
-                        "required": true,
-                        "description": "Tiempo a setear. 'ya' para ejecutar en el momento, sino es '* /1 * * * * *'",
-                        "schema": {
-                            "$ref": "#/definitions/time"
-                        }
+            }
+        },
+        "/setCron": {
+            "summary": "Setea tiempo de sincronización de CSV",
+            "tags": [
+                "Otros"
+            ],
+            "parameters": [
+                {
+                    "in": "body",
+                    "name": "time",
+                    "required": true,
+                    "description": "Tiempo a setear. 'ya' para ejecutar en el momento, sino es '* /1 * * * * *'",
+                    "schema": {
+                        "$ref": "#/definitions/time"
                     }
-                ],
-                "responses": {
-                    "200": {
-                        "description": "OK"
-                    }
+                }
+            ],
+            "responses": {
+                "200": {
+                    "description": "OK"
                 }
             }
         }
