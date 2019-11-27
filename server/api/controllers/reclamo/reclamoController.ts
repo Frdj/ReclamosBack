@@ -51,22 +51,87 @@ async function getDatosTienda(id: number){
 }
 
 async function doPostLogistica(data){
-  return axios.post("https://logistica-integracion.herokuapp.com/order/reclamos/receive",{    
-      "address" : data.address,
-      "buyerId": data.buyerId,
-      "email": data.email,
-      "itemId": data.itemId,
-      "orderId": data.orderId,
-      "quantity": data.quantity,
-      "weight": data.weight
-  })
-  .then(res => {
-    return res.status;
-  })
-  .catch(error => {
-    return error;
-  })
+  return axios({
+    method: 'post',
+    url: "https://uade-sso-users-api.herokuapp.com/api/machine/login",
+    headers: {
+       'TENANT-ID': 'c288ca88-20b0-4952-a0ae-98cce9ecba97'
+    },
+    data:{
+       "id": "cdef4876-2eea-4e8e-b823-27c8904574e1",
+       "secret": "TJP#!960JGoVCj7_f5N8ykk-@1i0@3Vq8rJMPG2_egx#kxWb%e"
+    }
+ }).then(async res => {
+      let token = res.data.token;
+      //console.log(token);
+       return await axios({
+        method: 'post',
+        url: "https://logistica-integracion.herokuapp.com/order/reclamos/receive",
+        headers: {
+           Authorization: 'Bearer ' + res.data.token
+        },
+        data:{    
+        "address" : data.address,
+        "buyerId": data.buyerId,
+        "email": data.email,
+        "itemId": data.itemId,
+        "orderId": data.orderId,
+        "quantity": data.quantity,
+        "weight": data.weight
+        }
+      })
+      .then(res => {
+         //console.log(res.status)
+         LogService.save(new Logs("Info",`Logistica: order/reclamos/receive devolvio status ${res.status}.`)); 
+
+        return res.status;
+      })
+      .catch(error => {
+        LogService.save(new Logs("Error",`Logistica: Error al imponer el reclamo ${data.orderId} - ${error}.`)); 
+        //console.log(`Error al imponer el reclamo en logistica - ${error}`)
+        return error;
+      })
+  }).catch(err =>{
+    LogService.save(new Logs("Error",`Logistica: login failed - ${err}.`)); 
+      //console.log(`Error al loguearse en logistica - ${err}`)
+  });
+   
  }
+/*async function doPostLogistica(data){
+   axios.post("https://logistica-integracion.herokuapp.com/auth/signin",{
+    "email": "reclamos@reclamosuade.com.ar",
+    "password": "1-reclamos"
+  })
+  .then(async res => {
+      let token = res.data.token;
+      await axios({
+        method: 'post',
+        url: "https://logistica-integracion.herokuapp.com/order/reclamos/receive",
+        headers: {
+           Authorization: 'Bearer ' + res.data.token
+        },
+        data:{    
+        "address" : data.address,
+        "buyerId": data.buyerId,
+        "email": data.email,
+        "itemId": data.itemId,
+        "orderId": data.orderId,
+        "quantity": data.quantity,
+        "weight": data.weight
+        }
+      })
+      .then(res => {
+        return res.status;
+      })
+      .catch(error => {
+        console.log(`Error al imponer el reclamo en logistica - ${error}`)
+        return error;
+      })
+  }).catch(err =>{
+      console.log(`Error al loguearse en logistica - ${err}`)
+  });
+   
+ }*/
 
 export class ReclamoController {
   /**
@@ -374,6 +439,7 @@ export class ReclamoController {
       });
       return;
     }
+
     ReclamoService.findOne(id)
       .then(r => {
         if (!r) {
@@ -381,14 +447,10 @@ export class ReclamoController {
         } else {
           if(reclamo.descripcion != undefined && reclamo.descripcion != "")
             r.descripcion = reclamo.descripcion;
-          r.estado.id = reclamo.estado;
-          if(reclamo.estado == 4){// es un estado cancelado
-            //aviso a logistica de la orden cancelada
-            //axios.post("endpoint de cancel",{id de pedido = id nuestro});
-            //va a requerir un token de m2m o de tipo usuario.
-            //En caso de que sea de tipo usuario nos tenemos que registrar
-            //cuando nos logueamos nos dan un token y con eso vamos al endpoint
-
+          r.estado.id = reclamo.estado.id;
+          if(reclamo.estado.id == 4){
+            console.log("\npasa por esta parte\n")
+            console.log(reclamo.estado)
             /* cuenta de reclamos en logistica
             {
               "email": "reclamos@reclamosuade.com.ar",
@@ -396,19 +458,50 @@ export class ReclamoController {
               "password": "1-reclamos"
             }
             */
-            axios.post("https://logistica-integracion.herokuapp.com/auth/signin",{
-                "email": "reclamos@reclamosuade.com.ar",
-                "password": "1-reclamos"
-            })
-            .then(res => {
-              let token = res.data.token;
-              //console.log(token);
-            })
+            axios({
+              method: 'post',
+              url: "https://uade-sso-users-api.herokuapp.com/api/machine/login",
+              headers: {
+                 'TENANT-ID': 'c288ca88-20b0-4952-a0ae-98cce9ecba97'
+              },
+              data:{
+                 "id": "cdef4876-2eea-4e8e-b823-27c8904574e1",
+                 "secret": "TJP#!960JGoVCj7_f5N8ykk-@1i0@3Vq8rJMPG2_egx#kxWb%e"
+              }
+           }).then(async res => {
+              await axios({
+                 method: 'post',
+                 url: 'https://logistica-integracion.herokuapp.com/order/reclamos/cancel',
+                 headers: {
+                    Authorization: 'Bearer ' + res.data.token
+                 },
+                 data:{
+                    "orderId" : r.nroOrden
+                 }
+              }).then(res2 =>{
+                LogService.save(new Logs("Info",`Logistica: order/cancel status: ${res2.status} - ${res2.data.message}`)); 
+
+                 //console.log(res2.data);
+              }).catch(err =>{
+                LogService.save(new Logs("Error",`Logistica: Error al cancelar la orden ${r.nroOrden} - ${err}.`)); 
+
+                 //console.log(`Error al cancelar la orden en logistica - ${err}`)
+              })
+            }).catch(err =>{
+              LogService.save(new Logs("Error",`Logistica: ${r.nroOrden} Error en login  - ${err}.`)); 
+
+              //console.log(`Error al loguearse en logistica - ${err}`)
+            });
+          }
+          else{
+            console.log(reclamo.estado)
           }
           ReclamoService.update(id, r).then(r2 => {
             if (!r2) {
               return res.status(ResponseCode.InternalServerError).end();
             }
+            LogService.save(new Logs("Success",`Reclamo nro ${r.nroOrden} Updated Successfully.`)); 
+
             return res.status(ResponseCode.Ok).end();
           });
         }
@@ -423,6 +516,41 @@ export class ReclamoController {
     ReclamoService.remove(id)
       .then(r => {
         if (!r) return res.status(ResponseCode.NotFound).end();
+            axios({
+              method: 'post',
+              url: "https://uade-sso-users-api.herokuapp.com/api/machine/login",
+              headers: {
+                'TENANT-ID': 'c288ca88-20b0-4952-a0ae-98cce9ecba97'
+              },
+              data:{
+                "id": "cdef4876-2eea-4e8e-b823-27c8904574e1",
+                "secret": "TJP#!960JGoVCj7_f5N8ykk-@1i0@3Vq8rJMPG2_egx#kxWb%e"
+              }
+            })
+            .then(async res => {
+              await axios({
+                 method: 'post',
+                 url: 'https://logistica-integracion.herokuapp.com/order/reclamos/cancel',
+                 headers: {
+                    Authorization: 'Bearer ' + res.data.token
+                 },
+                 data:{
+                    "orderId" : r.nroOrden
+                 }
+              }).then(res2 =>{
+                LogService.save(new Logs("Info",`Logistica: /order/reclamos/cancel status: ${res2.status} - ${res2.message}`)); 
+
+                 //console.log(res2.data);
+              }).catch(err =>{
+                LogService.save(new Logs("Error",`Logistica: Error al eliminar la orden ${r.nroOrden} - ${err}.`)); 
+
+                 //console.log(`Error al cancelar la orden en logistica - ${err}`)
+              })
+            }).catch(err =>{
+              LogService.save(new Logs("Error",`Logistica: ${r.nroOrden} Error en login  - ${err}.`)); 
+
+              //console.log(`Error al loguearse en logistica - ${err}`)
+            });
         res.json(r);
       })
       .catch(err => res.status(ResponseCode.InternalServerError).end());

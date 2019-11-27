@@ -73,7 +73,8 @@ export default class UpdateStates {
                     if(reclamo.estado.id != estado.id){
                       reclamo.estado.id = estado.id;
                       ReclamoService.update(reclamo.id,reclamo);
-                    
+                      LogService.save(new Logs("Info",`Nro orden ${data[0]}: Estado actualizado a ${estado.descripcion}`));
+
                       if(estado.descripcion.toLowerCase() == "retiro pendiente"){
                         this.sendEmail(reclamo.usuario.nombre + "!, El grupo de logistica ya esta en camino!",reclamo.nroOrden,reclamo.usuario.email);
                       }

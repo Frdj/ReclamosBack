@@ -4,7 +4,7 @@ var moment = require('moment');
 var secret = 'ecca2947003142d9a7d9da17703246bf';
 var tiendaSecret = '12jnedoid1n32ñrn32noido12inekm32n2oif2in1';
 
-exports.ensureAuth = function (req, res, next) { 
+exports.ensureAuth = function (req, res, next) {
     if (!req.headers.authorization) {
         return res.status(403).send({ message: 'La peticion no tiene la cabecera de autenticación' });
     } else {
