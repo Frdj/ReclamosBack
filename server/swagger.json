@@ -208,11 +208,40 @@
                         "description": "Error. Reclamo no encontrado."
                     }
                 }
+            },
+            "/setCron": {
+                "summary": "Setea tiempo de sincronización de CSV",
+                "tags": [
+                    "Otros"
+                ],
+                "parameters": [
+                    {
+                        "in": "body",
+                        "name": "time",
+                        "required": true,
+                        "description": "Tiempo a setear. 'ya' para ejecutar en el momento, sino es '* /1 * * * * *'",
+                        "schema": {
+                            "$ref": "#/definitions/time"
+                        }
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "OK"
+                    }
+                }
             }
         }
     },
     "definitions": {
         "id": {
+            "properties": {
+                "uuid": {
+                    "type": "string"
+                }
+            }
+        },
+        "time": {
             "properties": {
                 "uuid": {
                     "type": "string"
@@ -247,6 +276,18 @@
             "type": "object",
             "properties": {
                 "email": {
+                    "type": "string"
+                },
+                "calle": {
+                    "type": "string"
+                },
+                "CodPostal": {
+                    "type": "string"
+                },
+                "ciudad": {
+                    "type": "string"
+                },
+                "provincia": {
                     "type": "string"
                 },
                 "descripcion": {
