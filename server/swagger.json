@@ -25,12 +25,12 @@
             "description": "API de reclamos"
         },
         {
-            "name": "Otros",
-            "description": "Endpoints para la web de reclamos"
-        },
-        {
             "name": "Integraciones",
             "description": "Endpoints para integraciones con otros módulos"
+        },
+        {
+            "name": "Otros",
+            "description": "Endpoints para la web de reclamos"
         }
     ],
     "consumes": [
