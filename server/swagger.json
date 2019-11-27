@@ -281,7 +281,7 @@
                 "calle": {
                     "type": "string"
                 },
-                "CodPostal": {
+                "codPostal": {
                     "type": "string"
                 },
                 "ciudad": {
