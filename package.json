@@ -18,7 +18,7 @@
     "mssql": "^5.1.0",
     "nodemon": "^1.19.1",
     "ts-node": "^8.3.0",
-    "typeorm": "^0.2.18",
+    "typeorm": "^0.2.25",
     "typescript": "^3.5.3"
   },
   "devDependencies": {
